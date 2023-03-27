@@ -55,7 +55,7 @@ public class DataHandler {
             b[i] = Byte.parseByte(s, 2);
         }
         String dataToSave = new String(b);
-        System.out.println(dataToSave);
+        //System.out.println(dataToSave);
         return b;
     }
 

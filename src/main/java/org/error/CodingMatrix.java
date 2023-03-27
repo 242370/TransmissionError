@@ -73,13 +73,10 @@ public class CodingMatrix {
         }
         int[] bits = check2(marker);
         if (bits[0] != -1 && bits[1] != -1) {
-            codedByte[bits[0]] = (codedByte[bit] + 1) % 2;
-            System.out.println("po 1 zmianie");
-            System.out.println("po 2 zmianie");
-            codedByte[bits[1]] = (codedByte[bit] + 1) % 2;
+            codedByte[bits[0]] = (codedByte[bits[0]] + 1) % 2;
+            codedByte[bits[1]] = (codedByte[bits[1]] + 1) % 2;
             return;
         }
-        else System.out.println("nie wszedlem w warunek");
     }
 
 
@@ -116,7 +113,7 @@ public class CodingMatrix {
             for (int secondCol = firstCol + 1; secondCol < this.N + this.M; secondCol++) {
                 Arrays.fill(colsSum, 0);
                 for (int row = 0; row < this.N; row++) {
-                    colsSum[row] = this.twoBitMatrix[row][firstCol] + this.twoBitMatrix[row][secondCol];
+                    colsSum[row] = (this.twoBitMatrix[row][firstCol] + this.twoBitMatrix[row][secondCol])%2;
                 }
                 boolean flag = true;
                 for (int row = 0; row < this.N; row++) {
@@ -127,9 +124,7 @@ public class CodingMatrix {
                 }
                 if (flag) {
                     errors[0] = firstCol;
-                    System.out.println("firstCol: "+firstCol);
                     errors[1] = secondCol;
-                    System.out.println("secondCol: "+secondCol);
                     return errors;
                 }
             }

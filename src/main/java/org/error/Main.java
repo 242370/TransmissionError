@@ -24,6 +24,8 @@ public class Main {
 
         //Wprowadz blad do danych - symulaja bledu transmisji
         hehe[2][1] = 0;
+        //dwa bledy jeszcze nie dzialaja!!!!
+        hehe[2][2] = 0;
 
         //Zapisz bledne dane do pliku
         int counter = 0;
@@ -37,8 +39,7 @@ public class Main {
         }
         fh.saveToFile(dataToSave, "wrong_data.bin");
 
-        //dwa bledy jeszcze nie dzialaja!!!!
-        //hehe[2][2] = 0;
+
 
         //sprawdz poprawnosc zakodowanych danych
         boolean isGood = cm.check(hehe[2], marker);
