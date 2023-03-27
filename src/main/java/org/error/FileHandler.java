@@ -33,4 +33,10 @@ public class FileHandler {
         return data;
     }
 
+    public String readFromEncodedFile(String filename) throws IOException {
+        Path path = Paths.get(filename);
+        String data = Files.readString(path);
+        return data;
+    }
+
 }

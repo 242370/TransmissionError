@@ -13,7 +13,7 @@ public class DataHandler {
         for (int i = 0; i < fileData.length; i++) {
             String bits = Integer.toBinaryString(fileData[i]);
             if (bits.length() != bitsNumber) {
-                bits = insertString(bits, 0);
+                bits = insertString(bits, 0, 8);
             }
             for (int j = 0; j < bitsNumber; j++) {
                 dataInBits[i][j] = Character.getNumericValue(bits.charAt(j));
@@ -22,9 +22,25 @@ public class DataHandler {
         return dataInBits;
     }
 
-    private String insertString(String text, int value) {
+    public int[][] getBitsData(String fileData, int length) {
+        int[][] dataInBits = new int[fileData.length()/length][length];
+        String []dataStorage = fileData.split(("(?<=\\G.{" + length + "})"));
+        String [][]finalDataInString = new String[dataStorage.length][16];
+        for (int i=0; i<dataStorage.length; i++) {
+            finalDataInString[i] = dataStorage[i].split(("(?<=\\G.{" + 1 + "})"));
+        }
+        for (int i = 0; i < dataInBits.length; i++) {
+            for(int j=0; j<16; j++) {
+                dataInBits[i][j] = Integer.parseInt(finalDataInString[i][j]);
+            }
+        }
+
+        return dataInBits;
+    }
+
+    private String insertString(String text, int value, int length) {
         String updatedText = new String();
-        int diff = bitsNumber - text.length();
+        int diff = length - text.length();
         for (int i = 0; i < diff; i++) {
             updatedText += "0";
         }
@@ -32,8 +48,8 @@ public class DataHandler {
         return updatedText;
     }
 
-    public void showData(int[][] data) {
-        System.out.println("Number of bytes: " + data.length);
+    public void showData(int[][] data, String header) {
+        System.out.println(header);
         for (int i = 0; i < data.length; i++) {
             int counter = i + 1;
             System.out.print("Row number " + counter + ": ");
@@ -42,6 +58,7 @@ public class DataHandler {
             }
             System.out.println();
         }
+        System.out.println();
     }
 
     public byte[] decode(int[][] codingWords) {
@@ -52,10 +69,11 @@ public class DataHandler {
                 c[j] = (char) (codingWords[i][j] + '0');
             }
             String s = new String(c);
-            b[i] = Byte.parseByte(s, 2);
+            b[i] = (byte) Integer.parseInt(s, 2);
+                    //Byte.parseByte(s, 2);
         }
         String dataToSave = new String(b);
-        //System.out.println(dataToSave);
+        System.out.println(dataToSave);
         return b;
     }
 

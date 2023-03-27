@@ -1,93 +1,54 @@
 package org.error;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
-        DataHandler bm = new DataHandler();
-        CodingMatrix cm = new CodingMatrix();
-        FileHandler fh = new FileHandler();
+    static DataHandler bm = new DataHandler();
+    static CodingMatrix cm = new CodingMatrix();
+    static FileHandler fh = new FileHandler();
+
+    private static void encodeAndSave() throws Exception {
 
         //Pobierz dane z pliku i przekonwertuj na binarke w systemie dwojkowym
-        int[][] hehe = bm.getData(fh.readFromFile("data.txt"));
-
-
-        //wyswietl bity kolejnych bajtow danych
-        bm.showData(hehe);
+        int[][] data = bm.getData(fh.readFromFile("data.txt"));
 
         //Zakoduj kazdy bajt (stworz slowa kodowe poprzez dodanie bitow parzystosci)
-        for (int i = 0; i < hehe.length; i++) {
-            hehe[i] = cm.encode(hehe[i]);
+        for (int i = 0; i < data.length; i++) {
+            data[i] = cm.encode(data[i]);
         }
         System.out.println("encoded");
+        bm.showData(data, "Zakodowane dane:");
 
-        //Stworz wektor bledu, ktory bedzie uzyty do sprawdzenia poprawnosci danych
-        int[] marker = new int[cm.getN()];
-
-        //Wprowadz blad do danych - symulaja bledu transmisji
-        hehe[2][1] = 0;
-        //dwa bledy jeszcze nie dzialaja!!!!
-        hehe[2][2] = 0;
-
-        //Zapisz bledne dane do pliku
         int counter = 0;
-        int[] dataToSave = new int[hehe.length * hehe[0].length];
+        int[] dataToSave = new int[data.length * 16];
 
-        for (int i = 0; i < hehe.length; i++) { //konwersja na jeden wymiar
-            for (int j = 0; j < 8; j++) {
-                dataToSave[counter] = hehe[i][j];
+        for (int i = 0; i < data.length; i++) { //konwersja na jeden wymiar
+            for (int j = 0; j < 16; j++) {
+                dataToSave[counter] = data[i][j];
                 counter++;
             }
         }
-        fh.saveToFile(dataToSave, "wrong_data.bin");
+        fh.saveToFile(dataToSave, "encoded_data.bin");
+    }
 
+    private static void repairAndSaveDecoded(String fiename) throws Exception {
+        //wczytaj zmienione recznie dane (bledne)
+        int[][] data = bm.getBitsData(fh.readFromEncodedFile("encoded_data.bin"), 16);
+        bm.showData(data, "Dane z zasymulowanym przez nas bledem");
 
-
-        //sprawdz poprawnosc zakodowanych danych
-        boolean isGood = cm.check(hehe[2], marker);
-        for (int i = 0; i < marker.length; i++) {
-            System.out.print(marker[i]);
-        }
-        System.out.println();
-
-        //pokaz czy dane faktycznie sa bledne
-        bm.showData(hehe);
-
-
-        if (isGood) {
-            System.out.println("nothing to correct");
-        } else {
-            System.out.println("bit or 2 bits to correct");
-        }
-
-        //Popraw wczesniej zasymulowany blad - teraz dane beda poprawne
-        cm.correct(hehe[2], marker);
-
-        //Pokaz czy dane faktycznie sa poprawne
-        bm.showData(hehe);
-
-        //Ponownie sprawdz poprawnosc danych - juz nie powinno byc bledu
-        isGood = cm.check(hehe[2], marker);
-
-        if (isGood) {
-            System.out.println("nothing to correct");
-        } else {
-            System.out.println("bit or two bits to correct");
-        }
-
-        //Zapisz poprawne dane do pliku
-        counter = 0;
-        dataToSave = new int[hehe.length * hehe[0].length];
-        for (int i = 0; i < hehe.length; i++) { //konwersja na jeden wymiar
-            for (int j = 0; j < hehe[i].length; j++) {
-                dataToSave[counter] = hehe[i][j];
-                counter++;
+        for(int i=0; i<data.length; i++) {
+            //Stworz wektor bledu, ktory bedzie uzyty do sprawdzenia poprawnosci danych
+            int[] marker = new int[cm.getN()];
+            if(!cm.check(data[i], marker)) {
+                cm.correct(data[i], marker);
             }
         }
-        fh.saveToFile(dataToSave, "correct_data.bin");
-
-        //Pokaz dane ktore beda dekodowane
-        bm.showData(hehe);
-
+        bm.showData(data, "Poprawione dane");
         //Zapisz dane w postaci tekstowej (po zdekodowaniu) do pliku
-        fh.saveToFile(bm.decode(hehe), "decodedData.txt");
+        fh.saveToFile(bm.decode(data), "decodedData.txt");
+
+    }
+
+    public static void main(String[] args) throws Exception {
+          //encodeAndSave();
+          repairAndSaveDecoded("encoded_data.bin");
     }
 }
