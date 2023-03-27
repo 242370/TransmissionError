@@ -7,31 +7,30 @@ public class Main {
         FileHandler fh = new FileHandler();
 
         //Pobierz dane z pliku i przekonwertuj na binarke w systemie dwojkowym
-        int [][]hehe = bm.getData(fh.readFromFile("data.txt"));
-
+        int[][] hehe = bm.getData(fh.readFromFile("data.txt"));
 
 
         //wyswietl bity kolejnych bajtow danych
         bm.showData(hehe);
 
         //Zakoduj kazdy bajt (stworz slowa kodowe poprzez dodanie bitow parzystosci)
-        for(int i=0; i<hehe.length; i++) {
+        for (int i = 0; i < hehe.length; i++) {
             hehe[i] = cm.encode(hehe[i]);
         }
         System.out.println("encoded");
 
-        //Stworz wektor bledu, ktory bedzie uzyty to sprawdzenia poprawnosci danych
-        int []marker = new int [8];
+        //Stworz wektor bledu, ktory bedzie uzyty do sprawdzenia poprawnosci danych
+        int[] marker = new int[cm.getN()];
 
         //Wprowadz blad do danych - symulaja bledu transmisji
         hehe[2][1] = 0;
 
         //Zapisz bledne dane do pliku
         int counter = 0;
-        int []dataToSave = new int[hehe.length * hehe[0].length];
+        int[] dataToSave = new int[hehe.length * hehe[0].length];
 
-        for(int i=0; i<hehe.length; i++) { //konwersja na jeden wymiar
-            for(int j=0; j<8; j++) {
+        for (int i = 0; i < hehe.length; i++) { //konwersja na jeden wymiar
+            for (int j = 0; j < 8; j++) {
                 dataToSave[counter] = hehe[i][j];
                 counter++;
             }
@@ -43,7 +42,7 @@ public class Main {
 
         //sprawdz poprawnosc zakodowanych danych
         boolean isGood = cm.check(hehe[2], marker);
-        for(int i=0; i< marker.length; i++) {
+        for (int i = 0; i < marker.length; i++) {
             System.out.print(marker[i]);
         }
         System.out.println();
@@ -52,13 +51,13 @@ public class Main {
         bm.showData(hehe);
 
 
-        if(isGood) {
+        if (isGood) {
             System.out.println("nothing to correct");
         } else {
             System.out.println("bit or 2 bits to correct");
         }
 
-        //Popraw wczesniej zasymuowany blad - teraz dane beda poprawne
+        //Popraw wczesniej zasymulowany blad - teraz dane beda poprawne
         cm.correct(hehe[2], marker);
 
         //Pokaz czy dane faktycznie sa poprawne
@@ -67,7 +66,7 @@ public class Main {
         //Ponownie sprawdz poprawnosc danych - juz nie powinno byc bledu
         isGood = cm.check(hehe[2], marker);
 
-        if(isGood) {
+        if (isGood) {
             System.out.println("nothing to correct");
         } else {
             System.out.println("bit or two bits to correct");
@@ -76,8 +75,8 @@ public class Main {
         //Zapisz poprawne dane do pliku
         counter = 0;
         dataToSave = new int[hehe.length * hehe[0].length];
-        for(int i=0; i<hehe.length; i++) { //konwersja na jeden wymiar
-            for(int j=0; j<hehe[i].length; j++) {
+        for (int i = 0; i < hehe.length; i++) { //konwersja na jeden wymiar
+            for (int j = 0; j < hehe[i].length; j++) {
                 dataToSave[counter] = hehe[i][j];
                 counter++;
             }

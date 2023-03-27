@@ -137,4 +137,7 @@ public class CodingMatrix {
         return errors;
     }
 
+    public int getN() {
+        return N;
+    }
 }
