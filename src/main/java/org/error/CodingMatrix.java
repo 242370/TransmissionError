@@ -42,6 +42,7 @@ public class CodingMatrix {
             throw new Exception("Incorrect lengths");
         }
         boolean result = true;
+        int falseCounter = 0;
         Arrays.fill(marker, 0); // jeśli coś jest niepoprawnie, to marker to jedna z kolumn macierzy H
         for (int parityBit = 0; parityBit < this.N; parityBit++) {
             for (int i = 0; i < this.M + this.N; i++) {
@@ -50,6 +51,10 @@ public class CodingMatrix {
             marker[parityBit] = marker[parityBit] % 2; // jeśli nie wyjdzie 0, znaczy, że w tym miejscu jest błąd
             if (marker[parityBit] != 0) {
                 result = false; // nie zwracam, żeby pętla wykonywała się dalej
+//                falseCounter += 1;
+//                if(falseCounter==3) {
+//                    return result;
+//                }
             }
         }
         return result;
@@ -69,9 +74,12 @@ public class CodingMatrix {
         int[] bits = check2(marker);
         if (bits[0] != -1 && bits[1] != -1) {
             codedByte[bits[0]] = (codedByte[bit] + 1) % 2;
+            System.out.println("po 1 zmianie");
+            System.out.println("po 2 zmianie");
             codedByte[bits[1]] = (codedByte[bit] + 1) % 2;
             return;
         }
+        else System.out.println("nie wszedlem w warunek");
     }
 
 
@@ -119,11 +127,14 @@ public class CodingMatrix {
                 }
                 if (flag) {
                     errors[0] = firstCol;
+                    System.out.println("firstCol: "+firstCol);
                     errors[1] = secondCol;
+                    System.out.println("secondCol: "+secondCol);
                     return errors;
                 }
             }
         }
         return errors;
     }
+
 }
