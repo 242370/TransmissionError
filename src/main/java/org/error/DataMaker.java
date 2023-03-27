@@ -11,7 +11,7 @@ public class DataMaker {
     private final int bitsNumber = 8;
 
     public int[][] getData() {
-        Path path = Paths.get("C:\\Users\\jkowa\\Desktop\\Studia\\semestr IV\\Telekomuna\\TransmissionError\\src\\main\\java\\org\\error\\data.txt");
+        Path path = Paths.get("data.txt");
         try {
             byte[] fileData = Files.readAllBytes(path);
             int [][]dataInBits = new int[fileData.length][8];
@@ -41,7 +41,7 @@ public class DataMaker {
     }
 
     public void schowData(int [][]data) {
-        System.out.println("Length of bytes: " + data.length);
+        System.out.println("Number of bytes: " + data.length);
         for(int i=0; i<data.length; i++) {
             int counter = i+1;
             System.out.print("Row number " + counter + ": ");
